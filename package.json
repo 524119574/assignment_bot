@@ -1,0 +1,15 @@
+{
+  "name": "microsoft_bot",
+  "version": "1.0.0",
+  "description": "A learning project for microsoft bot framework",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Leonard G.",
+  "license": "ISC",
+  "dependencies": {
+    "botbuilder": "^3.10.2",
+    "restify": "^6.0.1"
+  }
+}

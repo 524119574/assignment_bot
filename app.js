@@ -44,12 +44,28 @@ bot.dialog('addAssignment', [
     function (session, results) {
         console.log(results.response);
         if (results.response) {
-            session.userData.assignments = session.userData.assignments || [];
-            session.userData.assignments.push({
-                assignmentName: session.dialogData.currentAssignment,
-                assignmentDueDate: session.dialogData.currentDueDate
+            var assignments = session.userData.assignments;
+            var currentAssignment = session.dialogData.currentAssignment;
+            var currentDueDate = session.dialogData.currentDueDate;
+
+            assignments = assignments || [];
+            assignments.push({
+                assignmentName: currentAssignment,
+                assignmentDueDate: currentDueDate
             });
+            // still need to consider the case when the user input time is ealier than tht current time
+            var timeDifference = Date.parse(currentDueDate) - Date.parse(new Date()) - 3600000;
+            timeDifference = timeDifference > 0 ? timeDifference : 0;
+            // dialog data will be cleared after the dialog has ended
+            var currentAssignment = currentAssignment;
+            setTimeout(function() {
+                session.send("Assignment " + currentAssignment + " is due within an hour");
+            }, timeDifference)
+            console.log(typeof currentDueDate)
             session.endDialog("The assignment has been added, you will be able to check all of your assignment, and you will receive a notice when the due date is near.");
+        }else {
+            session.send("OK. We'll start over.");
+            session.replaceDialog('addAssignment');
         }
     }
 ]).triggerAction({ matches: /add/i });
@@ -73,3 +89,15 @@ bot.dialog('showAll', function (session) {
 }).triggerAction({
     matches: /show all/i,
 });
+
+/*
+ * {assignmentName} String
+ * {dueDateInMilliSec} Number
+ */
+function setAlarm(assignmentName, dueDateInMilliSec) {
+    var timeDifference = dueDateInMilliSec - Date.parse(new Date()) - 3600000;
+    timeDifference = timeDifference > 0 ? timeDifference : 0;
+    setTimeout(function () {
+        session.send("Assignment " + assignmentName + " is due within an hour");
+    }, timeDifference)
+}

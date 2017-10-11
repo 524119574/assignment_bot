@@ -25,7 +25,6 @@ var bot = new builder.UniversalBot(connector, [
 ]);
 
 bot.recognizer(new builder.RegExpRecognizer("CancelIntent", { en_us: /^(cancel|nevermind)/i, ja_jp: /^(キャンセル)/ }));
-bot.recognizer
 
 bot.dialog('addAssignment', [
     function (session) {
@@ -44,11 +43,11 @@ bot.dialog('addAssignment', [
     function (session, results) {
         console.log(results.response);
         if (results.response) {
+            assignments = assignments || [];
             var assignments = session.userData.assignments;
             var currentAssignment = session.dialogData.currentAssignment;
             var currentDueDate = session.dialogData.currentDueDate;
 
-            assignments = assignments || [];
             assignments.push({
                 assignmentName: currentAssignment,
                 assignmentDueDate: currentDueDate
@@ -90,14 +89,4 @@ bot.dialog('showAll', function (session) {
     matches: /show all/i,
 });
 
-/*
- * {assignmentName} String
- * {dueDateInMilliSec} Number
- */
-function setAlarm(assignmentName, dueDateInMilliSec) {
-    var timeDifference = dueDateInMilliSec - Date.parse(new Date()) - 3600000;
-    timeDifference = timeDifference > 0 ? timeDifference : 0;
-    setTimeout(function () {
-        session.send("Assignment " + assignmentName + " is due within an hour");
-    }, timeDifference)
-}
+
